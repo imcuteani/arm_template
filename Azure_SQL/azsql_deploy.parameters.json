@@ -6,10 +6,10 @@
             "value": "techademy"
         },
         "administratorLogin": {
-            "value": "adminuser" 
+            "value": "<your_sql_server_login>" 
         },
         "administratorLoginPassword": {
-            "value": "BigData@22022022" 
+            "value": "<your_sql_server_loginpwd>" 
         }
     }
 }
