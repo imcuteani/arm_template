@@ -44,7 +44,7 @@
             "name": "[parameters('storageAccountName')]",
             "location": "[parameters('location')]",
             "sku":{
-                "name": "[parameters('storageAccountName')]"
+                "name": "[parameters('storageAccountType')]"
             },
             "kind": "StorageV2",
             "properties": {}
