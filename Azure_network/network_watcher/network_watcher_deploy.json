@@ -1,0 +1,63 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkwatherName": {
+            "type": "string",
+            "metadata": {
+                "description": "Network Watcher Name"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location of Network watcher"
+            }
+        },
+        "enableDeleteLock": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enable delete lock"
+            }
+        }
+    },
+
+    "functions": [],
+    "variables": {
+        "lockName": "[format('{0}-lck', parameters('networkwatherName'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkWatchers",
+            "apiVersion": "2020-11-01",
+            "name": "[parameters('networkwatherName')]",
+            "location": "[parameters('location')]",
+            "properties": {}
+        },
+        {
+            "condition": "[parameters('enableDeleteLock')]",
+            "type": "Microsoft.Authorization/locks",
+            "apiVersion": "2020-05-01",
+            "scope": "[format('Microsoft.Network/networkWatchers/{0}',parameters('networkwatherName'))]",
+            "name": "[variables('lockName')]",
+            "properties": {
+                "level": "CanNotDelete"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkWatchers',parameters('networkwatherName'))]"
+            ]
+        }
+    ],
+    "outputs": {
+        "name": {
+            "type": "string",
+            "value" : "[parameters('networkwatherName')]"
+        },
+        "id": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/networkWatchers',parameters('networkwatherName'))]"
+        }
+    }
+}
