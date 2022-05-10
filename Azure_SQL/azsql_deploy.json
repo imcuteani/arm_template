@@ -4,7 +4,7 @@
     "parameters": {
         "serverName" : {
             "type": "string",
-            "defaultValue": "[uniqueString('techademy', resourceGroup().id)]",
+           "defaultValue": "[uniqueString('techademy', resourceGroup().id)]",
             "metadata": {
                 "description": "The name of the SQL logical server."
             }
@@ -46,14 +46,27 @@
             "apiVersion": "2021-08-01-preview",
             "name": "[parameters('serverName')]",
             "location": "[parameters('location')]",
-            "sku":{
-                "name":"Standard",
+            
+            "properties": {
+             "administratorLogin": "[parameters('administratorLogin')]",
+             "administratorLoginPassword": "[parameters('administratorLoginPassword')]"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2021-08-01-preview",
+            "name": "[format('{0}/{1}', parameters('serverName'),parameters('sqlDBName'))]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "Standard",
                 "tier": "Standard"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers',parameters('serverName'))]"
+                 "[resourceId('Microsoft.Sql/servers', parameters('serverName'))]"   
+
             ]
         }
-    ],
-    "outputs": {}
+    ]
+           
+        
 }

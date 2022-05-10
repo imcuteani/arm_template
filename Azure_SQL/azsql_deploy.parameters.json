@@ -3,13 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "serverName":{
-            "value": "techademy"
+            "value": "techademysql"
         },
         "administratorLogin": {
-            "value": "<your_sql_server_login>" 
+            "value": "<your_azure_sqllogin>" 
         },
         "administratorLoginPassword": {
-            "value": "<your_sql_server_loginpwd>" 
+            "value": "<your_azure_loginpassword>" 
         }
     }
 }
