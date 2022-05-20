@@ -1,0 +1,33 @@
+# This is a basic workflow to help you get started with GitHub Environment with Actions
+
+on: [push]
+name: deployment
+ branches
+  - main
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+  
+      # Checkout code
+    - uses: actions/checkout@main
+
+      # Log into Azure
+    - uses: azure/actions/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: Azure/CLI@v1
+      with: 
+        inlineScript: |
+         #! /bin/bash
+         az --version
+         echo "Azure CLI version"
+      # Deploy ARM template
+    - name: Run ARM deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: ${{ secrets.AZURE_RG }}
+        template: ./Azure_Kubernetes/aks_deploy.json
+        parameters: aksClusterName=techademyaks
