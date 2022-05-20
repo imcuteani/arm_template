@@ -4,13 +4,14 @@
     "parameters": {
         "accountName": {
             "type": "string",
+            "defaultValue": "techademyadls",
             "metadata": {
                 "description": "The name of the Data Lake Store account to create."
             }
         },
         "location": {
             "type": "string",
-            "defaultValue": "[resourceGroup().location]",
+            "defaultValue": "eastus",
             "metadata": {
                 "description":"The location in which to create the data lake store account."
             }
