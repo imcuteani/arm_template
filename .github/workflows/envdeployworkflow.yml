@@ -31,4 +31,4 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./Azure_DataLake/adls_deploy.json
-        parameters: location=eastus
+        parameters: location=westeurope
