@@ -45,7 +45,7 @@
         },
         "skuTier": {
             "type": "string",
-            "defaultValue": "Gen5",
+            "defaultValue": "GeneralPurpose",
             "metadata": {
                 "description": "Azure database for PostgreSQL sku family"
             }
