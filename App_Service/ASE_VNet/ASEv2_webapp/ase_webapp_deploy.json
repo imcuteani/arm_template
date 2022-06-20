@@ -1,0 +1,58 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "aseName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the App Service Environment"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location of App Service Environment"
+            }
+        },
+        "existingVirtualNetworkName": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location of the App Service Environment"
+            }
+        },
+        "existingVirtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of existing VNET Resource Group"
+            }
+        },
+        "existingSubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Subnet which will contain the ASE"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/hostingEnvironments",
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('aseName')]",
+            "kind": "ASEV2",
+            "location": "[parameters('location')]",
+            "properties": {
+                "location": "[parameters('location')]",
+                "name": "[parameters('aseName')]",
+                "workerPools":[],
+                "virtualNetwork": {
+                    "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroup//{1}',subscription().subscriptionId, parameters('existingVirtualNetworkResourceGroup')), 'Microsoft.Network/virtualNetworks/subnets', parameters('existingVirtualNetworkName'), parameters('existingSubnetName'))]"
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

@@ -219,7 +219,7 @@
             "properties": {
                 "name": "[variables('ASE-SERVICE-Name')]",
                 "hostingEnvironment:": "[variables('ASE-Name')]",
-                "hostingEnvironmentId": "[resourceId('Microsoft.Web/hostingEnvironments',variables('ASE-Name'))]",
+                "hostingEnvironmentId": "[resourceId('Microsoft.Web/hostingEnvironments',variables('ASE-Name'))]"
                 
             },
             "sku": {

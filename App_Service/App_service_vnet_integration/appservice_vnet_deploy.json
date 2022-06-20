@@ -11,7 +11,7 @@
         },
         "appName": {
             "type": "string",
-            "defaultValue": "[uniqueString(resourceGroup().id)]",
+            "defaultValue": "techademy",
             "metadata": {
                 "description": "The name of the app to create"
             }
@@ -24,7 +24,7 @@
         "vnetAddressPrefix": "10.0.0.0/16",
         "subnetName": "[format('{0}sn',parameters('appName'))]",
         "subnetAddressPrefix": "10.0.0.0/24",
-        "appServicePlanSku": "S1"
+        "appServicePlanSku": "P2V2"
     },
     "resources": [
         {
