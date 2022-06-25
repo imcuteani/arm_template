@@ -12,7 +12,7 @@
             "value": "adminuser" // TODO: Fill in parameter value
         },
         "password": {
-            "value": "P@$sw0rd@25062022" // TODO: Fill in parameter value
+            "value": "<your_password>" // TODO: Fill in parameter value
         }
     }
 }
