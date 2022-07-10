@@ -6,7 +6,7 @@
             "value": "adminuser" 
         },
         "administratorLoginPassword": {
-            "value": "BigData@10072022" 
+            "value": "<your_admin_pwd>" 
         }
     }
 }

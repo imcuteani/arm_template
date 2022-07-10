@@ -12,7 +12,11 @@
             "value": "adminuser" 
         },
         "password": {
+<<<<<<< HEAD
             "value": "P@$sw0rd@25062022" 
+=======
+            "value": "<your_password>" // TODO: Fill in parameter value
+>>>>>>> 0574baaf58a4eae73916738d6195ce617416f566
         }
     }
 }
