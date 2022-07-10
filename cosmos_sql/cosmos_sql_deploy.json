@@ -1,0 +1,232 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "defaultValue": "[format('techademy-{0}',uniqueString(resourceGroup().id))]",
+            "metadata": {
+                "description": "Cosmos db account name, max length 44 characters"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for the Cosmos db account"
+            }
+        },
+        "primaryRegion": {
+            "type": "string",
+            "metadata": {
+                "description": "The primary replica region for the Cosmos db account"
+            }
+        },
+        "secondaryRegion": {
+            "type": "string",
+            "metadata": {
+                "description": "The secondary replica region for the cosmos db account"
+            }
+        },
+        "defaultConsistencyLevel": {
+            "type": "string",
+            "defaultValue": "Session",
+            "metadata": {
+                "description": "the default consistency for the cosmosdb"
+            },
+            "allowedValues": [
+                "Eventual",
+                "ConsistentPrefix",
+                "Session",
+                "BoundedStaleness",
+                "Strong"
+            ]
+        },
+        "maxStalenessPrefix": {
+            "type": "int",
+            "defaultValue": 100000,
+            "metadata": {
+                "description": "Max stale requests"
+            },
+            "maxValue": 214783647,
+            "minValue": 10
+        },
+        "maxIntervalInSeconds": {
+            "type": "int",
+            "defaultValue": 300,
+            "metadata": {
+                "description": "Max lag time."
+            },
+            "maxValue": 86400,
+            "minValue": 5
+        },
+        "automaticFailover": {
+          "type": "bool",
+          "defaultValue": true,
+          "metadata": {
+            "description": "Enable automatic failover for"
+          },
+          "allowedValues": [
+            true,
+            false
+          ]
+
+        },
+        "databaseName": {
+            "type": "string",
+            "defaultValue": "techademydb",
+            "metadata": {
+                "description": "The name of the database"
+            }
+        },
+        "containerName": {
+            "type": "string",
+            "defaultValue": "techademy",
+            "metadata": {
+                "description": "the name of the container"
+            }
+        },
+        "throughput": {
+            "type": "int",
+            "defaultValue": 400,
+            "metadata": {
+                "description": "The throughput for the container"
+            },
+            "maxValue": 1000000,
+            "minValue": 400
+        }
+    },
+    "functions": [],
+    "variables": {
+        "consistencyPolicy": {
+            "Eventual": {
+                "defaultConsistencyLevel": "Eventual"
+            },
+            "ConsistentPrefix": {
+                "defaultConsistencyLevel": "ConsistentPrefix"
+            },
+            "Session": {
+                "defaultConsistencyLevel": "Session"
+            },
+            "BoundedStaleness": {
+                "defaultConsistencyLevel": "BoindedStaleness",
+                "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
+                "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
+            },
+            "Strong": {
+                "defaultConsistencyLevel": "Strong"
+            }
+        },
+        "locations": [
+            {
+                "locationName": "[parameters('primaryRegion')]",
+                "failoverPriority": 0,
+                "isZoneRedundant": false
+            },
+            {
+                "locationName": "[parameters('secondaryRegion')]",
+                "failoverPriority": 1,
+                "isZoneRedundant": false
+            }
+        ]
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2022-02-15-preview",
+            "name": "[toLower(parameters('accountName'))]",
+            "location": "[parameters('location')]",
+            "kind": "GlobalDocumentDB",
+            "properties": {
+                "consistencyPolicy": "[variables('consistencyPolicy')]",
+                "locations": "[variables('locations')]",
+                "databaseAccountOfferType": "Standard",
+                "enableAnalyticalStorage": "[parameters('automaticFailover')]"
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "apiVersion": "2022-02-15-preview",
+            "name": "[format('{0}/{1}',toLower(parameters('accountName')),parameters('databaseName'))]",
+            "properties": {
+                "resource": {
+                    "id": "[parameters('databaseName')]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts',toLower(parameters('accountName')))]"
+            ]
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+            "apiVersion": "2022-02-15-preview",
+            "name": "[format('{0}/{1}', format('{0}/{1}',toLower(parameters('accountName')),parameters('databaseName')),parameters('containerName'))]",
+            "properties": {
+                "resource": {
+                    "id": "[parameters('containerName')]",
+                    "partitionKey": {
+                        "paths": [
+                            "/myPartitionKey"
+                        ],
+                        "kind": "Hash"
+                    },
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "includedPaths": [
+                            {
+                                "path": "/*"
+                            }
+                        ],
+                        "excludedPaths": [
+                            {
+                                "path": "/myPathtoNotIndex/*"
+                            }
+                        ],
+                        "compositeIndexes": [
+                            [
+                                {
+                                    "path": "/name",
+                                    "order": "ascending"
+                                },
+                                {
+                                    "path": "/age",
+                                    "order": "descending"
+                                }
+                            ]
+                        ],
+                      "spatialIndexes": [
+                        {
+                            "path": "/location/*",
+                            "types": [
+                                "Point",
+                                "Polygon",
+                                "MultiPolygon",
+                                "LineString"
+                            ]
+                        }
+
+                      ]
+
+                    },
+                    "defaultTtl": "86400",
+                    "uniqueKeyPolicy": {
+                        "uniqueKeys": [
+                            {
+                                "paths": [
+                                    "/phoneNumber"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "options": {
+                    "throughput": "[parameters('throughput')]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases',split(format('{0}/{1}',toLower(parameters('accountName')),parameters('databaseName')), '/')[0], split(format('{0}/{1}', toLower(parameters('accountName')), parameters('databaseName')), '/')[1])]"
+            ]
+        }
+    ],
+    "outputs": {}
+}

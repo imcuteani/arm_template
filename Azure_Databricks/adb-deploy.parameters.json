@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "disablePublicIp": {
+            "value": true
+        },
+        "location": {
+            "value": "eastasia" 
+        },
+        "nsgName": {
+            "value": "databricks-nsg"
+        },
+        "pricingTier": {
+            "value": "premium"
+        },
+        "privateSubnetCidr": {
+            "value": "10.179.64.0/18"
+        },
+        "privateSubnetName": {
+            "value": "private-subnet"
+        },
+        "publicNetworkAccess": {
+            "value": "Disabled"
+        },
+        "privateEndpointSubnetCidr": {
+            "value": "10.179.128.0/24"
+        },
+        "publicSubnetName": {
+            "value": "public-subnet"
+        },
+        "requiredNSGRules": {
+            "value": "AllRules"
+        },
+        "vnetCidr": {
+            "value": "10.179.0.0/16"
+        },
+        "vnetName": {
+            "value": "databricks-vnet"
+        },
+        "PrivateEndpointSubnetName": {
+            "value": "default"
+        },
+        "workspaceName": {
+            "value": "default"
+        }
+    }
+}

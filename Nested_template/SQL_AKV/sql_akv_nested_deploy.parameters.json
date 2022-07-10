@@ -3,13 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "vaultName": {
-            "value": "techademy" // TODO: Fill in parameter value
+            "value": "techademy" 
         },
         "secretName": {
-            "value": "techademysecret" // TODO: Fill in parameter value
+            "value": "techademysecret" 
         },
         "vaultResourceGroupName": {
-            "value": "techademy" // TODO: Fill in parameter value
+            "value": "techademy" 
         }
     }
 }

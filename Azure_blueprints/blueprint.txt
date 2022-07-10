@@ -1,0 +1,6 @@
+# Create a blueprint with Azure CLI 
+
+az deployment sub create \
+  --name techademy \
+  --location eastasia \
+  --template-uri "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/subscription-deployments/blueprints-new-blueprint/azuredeploy.json"  

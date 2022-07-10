@@ -11,14 +11,14 @@
         },
         "vnetAddressPrefix": {
             "type": "string",
-            "defaultValue": "10.0.0.0/16",
+            "defaultValue": "10.1.0.0/16",
             "metadata": {
                 "description": "Specifies the address prefix for the vnet"
             }
         },
         "vnetSubnetPrefix": {
             "type": "string",
-            "defaultValue": "10.0.0.0/28",
+            "defaultValue": "10.1.0.0/28",
             "metadata": {
                 "description": "Specifies the subnet"
             }
@@ -56,21 +56,21 @@
         },
         "backendIpAddress1": {
             "type": "string",
-            "defaultValue": "10.0.1.10",
+            "defaultValue": "10.1.1.10",
             "metadata": {
                 "description": "IP Address for backend server 1"
             }
         },
         "backendIpAddress2": {
             "type": "string",
-            "defaultValue": "10.0.1.11",
+            "defaultValue": "10.1.1.11",
             "metadata": {
                 "description": "IP address for backend server 2"
             }
         },
         "wafEnabled": {
             "type": "bool",
-            "defaultValue": "true",
+            "defaultValue": true,
             "metadata": {
                 "description": "WAF Enabled"
             }
@@ -91,7 +91,7 @@
             "allowedValues": [
                 "OWASP"
             ],
-            "defaultValue": "3.0",
+            "defaultValue": "OWASP",
             "metadata": {
                 "description": "WAF Rule set version"
             }
@@ -112,7 +112,7 @@
     "variables": {
         "applicationGatewayName": "applicationGateway1",
         "publicIPAddressName": "publicIp1",
-        "virtualNetworkName": "techademy",
+        "virtualNetworkName": "techademywaf",
         "subnetName": "appGatewaySubnet",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets/',variables('virtualNetworkName'),variables('subnetName'))]",
         "publicIPRef": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
@@ -224,7 +224,7 @@
                         "name": "appGatewayHttpListener",
                         "properties": {
                             "frontendIPConfiguration": {
-                                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfiguration', variables('applicationGatewayName'),'appGatewayFrontendIP')]"
+                                "id": "[resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations', variables('applicationGatewayName'),'appGatewayFrontendIP')]"
 
                             },
                             "frontendPort": {
@@ -244,6 +244,9 @@
                             },
                             "backendAddressPool": {
                                 "id": "[resourceId('Microsoft.Network/applicationGateways/backendAddressPools',variables('applicationGatewayName'),'appGatewayBackendPool')]"
+                            },
+                            "backendHttpSettings": {
+                                "id": "[resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection',variables('applicationGatewayName'),'appGatewayBackendHttpSettings')]"
                             }
                         }
                     }

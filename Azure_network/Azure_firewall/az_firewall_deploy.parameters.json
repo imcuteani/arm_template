@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "location": {
-            "value": "East Asia" // TODO: Fill in parameter value
+            "value": "East Asia" 
         },
         "firewallName": {
             "value": "techademyfirewall"

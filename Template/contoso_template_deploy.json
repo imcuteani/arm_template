@@ -1,0 +1,152 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "aksClusterName": {
+            "type": "string",
+            "defaultValue": "techademyaks",
+            "metadata": {
+                "description": "The name of the managed AKS Cluster resource"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description":"The location of AKS resource"
+            }
+        },
+        "dnsPrefix": {
+            "type": "string",
+            "defaultValue": "techademydns",
+            "metadata": {
+                "description": "Optional DNS prefix to use with hosted Kubernetes API Server JSON"
+            }
+        },
+        "osDiskSizeGB": {
+            "type": "int",
+            "defaultValue": 0,
+            "maxValue": 1023,
+            "minValue": 0,
+            "metadata": {
+                "description": "Disk size (in GiB) to provision each of AKs cluster agent pool node"
+            }
+        },
+        "agentCount": {
+            "type": "int",
+            "defaultValue": 3,
+            "maxValue": 100,
+            "minValue": 1,
+            "metadata": {
+                "description": "The number of nodes for the cluster. 1 Node is for DevTest & 3 Node recommended for Production"
+            }
+        },
+        "agentVMSize": {
+            "type": "string",
+            "defaultValue": "Standard_D2s_v3",
+            "metadata": {
+                "description": "the size of the VM"
+            }
+        },
+        "osType": {
+            "type": "string",
+            "defaultValue": "Linux",
+            "allowedValues": [
+                "Linux",
+                "Windows"
+            ],
+            "metadata": {
+                "description": "The type of Operating System"
+            }
+        },
+        "serverName": {
+            "type": "string",
+            "defaultValue": "[uniqueString('techademy',resourceGroup().id)]",
+            "metadata": {
+                "description": "The Azure SQL server name"
+            }
+        },
+        "sqlDBName": {
+            "type": "string",
+            "defaultValue": "techademydb",
+            "metadata": {
+                "description": "The name of the SQL database"
+            }
+        },
+        "administratorLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "The administrator password of the SQL logical server"
+
+            }
+        },
+        "administratorLoginPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The administrator password of the sql logical server"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ContainerService/managedClusters",
+            "apiVersion": "2021-11-01-preview",
+            "name": "[parameters('aksClusterName')]",
+            "location": "[parameters('location')]",
+            "tags": {
+                "displayname":"AKS Cluster"
+            },
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "enableRBAC": true,
+                "dnsPrefix": "[parameters('dnsPrefix')]",
+                "agentPoolProfiles": [
+                    {
+                        "name": "agentpool",
+                        "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+                        "count": "[parameters('agentCount')]",
+                        "vmSize": "[parameters('agentVMSize')]",
+                        "osType": "[parameters('osType')]",
+                        "type": "VirtualMachineScaleSets",
+                        "mode": "System"
+                    }
+                ]
+            }
+        },
+        {
+            "type":"Microsoft.Sql/servers",
+            "apiVersion": "2021-08-01-preview",
+            "name": "[parameters('serverName')]",
+            "location": "[parameters('location')]",
+            
+            "properties": {
+             "administratorLogin": "[parameters('administratorLogin')]",
+             "administratorLoginPassword": "[parameters('administratorLoginPassword')]"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2021-08-01-preview",
+            "name": "[format('{0}/{1}', parameters('serverName'),parameters('sqlDBName'))]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard"
+            },
+            "dependsOn": [
+                 "[resourceId('Microsoft.Sql/servers', parameters('serverName'))]"   
+
+            ]
+        }
+    ],
+    "outputs": {
+        "controlPlaneFQDN": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('aksClusterName'))).fqdn]"
+        }
+    }
+}

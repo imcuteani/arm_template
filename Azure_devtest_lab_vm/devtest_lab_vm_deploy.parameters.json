@@ -3,16 +3,16 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "labName": {
-            "value": "techademy" // TODO: Fill in parameter value
+            "value": "techademy" 
         },
         "vmName": {
-            "value": "techademyvm" // TODO: Fill in parameter value
+            "value": "techademyvm" 
         },
         "userName": {
-            "value": "adminuser" // TODO: Fill in parameter value
+            "value": "adminuser" 
         },
         "password": {
-            "value": "P@$sw0rd@25062022" // TODO: Fill in parameter value
+            "value": "P@$sw0rd@25062022" 
         }
     }
 }
